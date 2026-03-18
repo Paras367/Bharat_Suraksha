@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suraksha - India's Spam & Safety Shield</title>
+    <style>
+        /* --- 1. CSS VARIABLES & THEME (India Feel) --- */
+        :root {
+            --saffron: #FF9933;
+            --white: #FFFFFF;
+            --green: #138808;
+            --chakra-blue: #000080;
+            --bg-cream: #FFF8E1;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --text-dark: #333;
+            --danger: #d32f2f;
+        }
+
+        /* --- 2. GLOBAL RESET & TYPOGRAPHY --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-cream); color: var(--text-dark); overflow-x: hidden; }
+        
+        /* --- 3. HEADER & NAVIGATION --- */
+        header {
+            background: linear-gradient(135deg, var(--saffron), var(--white), var(--green));
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { font-size: 2.5rem; font-weight: bold; color: var(--chakra-blue); text-shadow: 1px 1px 2px white; }
+        .tagline { font-size: 1rem; color: var(--chakra-blue); font-weight: 600; margin-top: 5px; }
+
+        /* --- 4. HERO SECTION & SEARCH --- */
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            background: url('https://source.unsplash.com/1600x900/?technology,india') no-repeat center center/cover;
+            position: relative;
+        }
+        .hero::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.85); }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+        
+        /* --- 5. SEARCH BAR STYLING --- */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        input#searchInput {
+            padding: 15px;
+            width: 60%;
+            border: 2px solid var(--saffron);
+            border-radius: 30px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        input#searchInput:focus { border-color: var(--chakra-blue); box-shadow: 0 0 10px rgba(0,0,128,0.2); }
+        button.search-btn {
+            padding: 15px 30px;
+            background-color: var(--chakra-blue);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        button.search-btn:hover { transform: scale(1.05); background-color: #000060; }
+
+        /* --- 6. AGE FILTER TOGGLE --- */
+        .age-filter {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--green);
+            background: transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--green);
+        }
+        .filter-btn.active { background: var(--green); color: white; }
+
+        /* --- 7. CONTENT GRID LAYOUT --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- 8. INFO CARDS --- */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s, border 0.3s;
+            border-bottom: 5px solid var(--saffron);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-10px); border-bottom-color: var(--chakra-blue); }
+        .card h3 { color: var(--chakra-blue); margin-bottom: 10px; }
+        .card-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        
+        /* --- 9. CSAM PROTECTION SECTION (Special Styling) --- */
+        .csam-section {
+            background: linear-gradient(to right, #ffebee, #fff);
+            border: 2px solid var(--danger);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        .csam-title { color: var(--danger); font-size: 1.8rem; margin-bottom: 15px; }
+        .helpline-box {
+            background: var(--danger);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            animation: pulse 2s infinite;
+        }
+
+        /* --- 10. ANIMATIONS --- */
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: slideIn 0.6s ease-out forwards; }
+
+        /* --- 11. MODAL / POPUP STYLES --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0; top: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 15px;
+            text-align: center;
+            border-top: 10px solid var(--green);
+        }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+
+        /* --- 12. QUIZ SECTION --- */
+        .quiz-section { background: white; padding: 30px; border-radius: 15px; margin-top: 30px; }
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .quiz-option:hover { background: #e0e0e0; }
+
+        .report-form { display: flex; flex-direction: column; gap: 10px; }
+        .report-input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .submit-btn { background: var(--chakra-blue); color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+        footer {
+            background: var(--chakra-blue);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        @media (max-width: 600px) {
+            .search-container { flex-direction: column; }
+            input#searchInput { width: 100%; }
+            .logo { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+
+    <header>
+        <div class="logo">🛡️ Suraksha Shield</div>
+        <div class="tagline">Digital Safety for Every Indian</div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content animate-in">
+            <h1>Stay Safe from Digital Spam</h1>
+            <p>Learn to identify scams, protect your data, and keep children safe.</p>
+            
+
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search topics (e.g., Phishing, Lottery Scam)..." onkeyup="filterContent()">
+                <button class="search-btn" onclick="filterContent()">Search</button>
+            </div>
+
+
+            <div class="age-filter">
+                <button class="filter-btn active" onclick="setMode('adult')">Adult / Expert Mode</button>
+                <button class="filter-btn" onclick="setMode('child')">Kids / Simple Mode</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="grid" id="contentGrid">
+
+            <div class="card content-item" data-keywords="phishing email fake link">
+                <span class="card-icon">🎣</span>
+                <h3>Phishing (The Hook)</h3>
+                <p class="desc-adult">Phishing is a cybercrime where targets are contacted by email, telephone or text message by someone posing as a legitimate institution to lure individuals into providing sensitive data.</p>
+                <p class="desc-child" style="display:none;">Imagine a fisherman using fake food to catch a fish. Scammers send fake emails pretending to be your bank to steal your password!</p>
+                <button class="search-btn" style="padding: 5px 15px; font-size: 0.8rem; margin-top:10px;" onclick="openModal('Phishing Alert')">Learn More</button>
+            </div>
+
+            <div class="card content-item" data-keywords="smishing sms text message otp">
+                <span class="card-icon">📱</span>
+                <h3>Smishing (SMS Scams)</h3>
+                <p class="desc-adult">Smishing uses SMS text messages to trick users into revealing personal information or downloading malware. Common in India via fake KYC or Lottery messages.</p>
+                <p class="desc-child" style="display:none;">Be careful with text messages! If a stranger texts you saying you won a prize, don't click the link. Ask your parents first.</p>
+                <button class="search-btn" style="padding: 5px 15px; font-size: 0.8rem; margin-top:10px;" onclick="openModal('Smishing Alert')">Learn More</button>
+            </div>
+
+            <div class="card content-item" data-keywords="vishing call voice scam">
+                <span class="card-icon">📞</span>
+                <h3>Vishing (Voice Scams)</h3>
+                <p class="desc-adult">Voice phishing. Scammers call pretending to be police, bank officials, or tech support to demand money or OTPs.</p>
+                <p class="desc-child" style="display:none;">Never tell anyone your secret codes (OTP) over the phone, even if they say they are from the police. Real police never ask for passwords.</p>
+                <button class="search-btn" style="padding: 5px 15px; font-size: 0.8rem; margin-top:10px;" onclick="openModal('Vishing Alert')">Learn More</button>
+            </div>
+
+
+            <div class="card content-item" data-keywords="virus malware download app">
+                <span class="card-icon">🦠</span>
+                <h3>Malware & Bad Apps</h3>
+                <p class="desc-adult">Malicious software designed to damage or gain unauthorized access. Often hidden in cracked apps or unknown APK files.</p>
+                <p class="desc-child" style="display:none;">Only download games and apps from the official Play Store. Don't install apps sent by strangers on WhatsApp.</p>
+                <button class="search-btn" style="padding: 5px 15px; font-size: 0.8rem; margin-top:10px;" onclick="openModal('Malware Alert')">Learn More</button>
+            </div>
+
+        </div>
+
+        <div class="csam-section animate-in" id="csamSection">
+            <h2 class="csam-title">🚨 Protection Against Child Sexual Abuse Material (CSAM)</h2>
+            <p>We are committed to a safe internet for children. If you encounter illegal content involving minors, do not forward it. Report it immediately.</p>
+            
+            <div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+                <div style="flex: 1; min-width: 250px; text-align: left;">
+                    <h4>How to Stay Safe:</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Never share personal photos with strangers.</li>
+                        <li>Use privacy settings on social media.</li>
+                        <li>Tell a trusted adult if someone makes you uncomfortable online.</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <div class="helpline-box">
+                        📞 National Helpline: 1098 (Childline India)
+                    </div>
+                    <br>
+                    <button class="search-btn" style="background-color: var(--danger); margin-top: 10px;" onclick="openModal('Report CSAM')">Report Illegal Content</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="quiz-section animate-in">
+            <h2 style="color: var(--chakra-blue); margin-bottom: 15px;">🧠 Safety Quiz</h2>
+            <p id="quiz-question">You receive a message: "Congratulations! You won an iPhone. Click here to claim." What do you do?</p>
+            <div id="quiz-options">
+                <button class="quiz-option" onclick="checkAnswer(false)">A. Click immediately!</button>
+                <button class="quiz-option" onclick="checkAnswer(true)">B. Delete it. It's a scam.</button>
+                <button class="quiz-option" onclick="checkAnswer(false)">C. Forward to all friends.</button>
+            </div>
+            <p id="quiz-result" style="margin-top: 15px; font-weight: bold;"></p>
+        </div>
+
+        
+        <div class="card animate-in" style="margin-top: 30px; border-bottom-color: var(--green);">
+            <h3>📢 Report a Spam Number/Link</h3>
+            <p>Help us clean the internet. Submit suspicious details anonymously.</p>
+            <form class="report-form" onsubmit="handleReport(event)" style="margin-top: 15px;">
+                <input type="text" class="report-input" placeholder="Phone Number or URL" required>
+                <select class="report-input">
+                    <option>Spam Call</option>
+                    <option>Phishing Link</option>
+                    <option>Inappropriate Content</option>
+                </select>
+                <button type="submit" class="submit-btn">Submit Report</button>
+            </form>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Suraksha Shield Initiative. Made for India 🇮🇳</p>
+        <p style="font-size: 0.8rem; opacity: 0.8;">Educational Purpose Only. Not affiliated with Govt of India.</p>
+    </footer>
+
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Title</h2>
+            <p id="modalBody">Content goes here...</p>
+            <button class="search-btn" style="margin-top: 20px;" onclick="closeModal()">Got it!</button>
+        </div>
+    </div>
+
+
+    <script>
+        let currentMode = 'adult';
+        function setMode(mode) {
+            currentMode = mode;
+            const adultDescs = document.querySelectorAll('.desc-adult');
+            const childDescs = document.querySelectorAll('.desc-child');
+            const btns = document.querySelectorAll('.filter-btn');
+
+            btns.forEach(b => b.classList.remove('active'));
+            
+            if(mode === 'child') {
+                adultDescs.forEach(el => el.style.display = 'none');
+                childDescs.forEach(el => el.style.display = 'block');
+                btns[1].classList.add('active');
+                document.body.style.backgroundColor = "#E0F7FA"; 
+            } else {
+                adultDescs.forEach(el => el.style.display = 'block');
+                childDescs.forEach(el => el.style.display = 'none');
+                btns[0].classList.add('active');
+                document.body.style.backgroundColor = "#FFF8E1"; 
+            }
+        }
+
+        function filterContent() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toUpperCase();
+            const grid = document.getElementById('contentGrid');
+            const cards = grid.getElementsByClassName('content-item');
+
+            for (let i = 0; i < cards.length; i++) {
+                const keywords = cards[i].getAttribute('data-keywords');
+                if (keywords.toUpperCase().indexOf(filter) > -1) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        function openModal(title) {
+            const modal = document.getElementById('infoModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.innerText = title;
+
+            if(title.includes('Phishing')) modalBody.innerText = "Phishing emails often have spelling mistakes, urgent language ('Act Now!'), and suspicious sender addresses. Always check the URL before clicking.";
+            else if(title.includes('Smishing')) modalBody.innerText = "Banks never ask for OTPs via SMS. If you get a link about KYC update, call your bank's official number first.";
+            else if(title.includes('Vishing')) modalBody.innerText = "Caller ID can be faked (Spoofing). Never share OTPs, PINs, or CVV numbers over the phone.";
+            else if(title.includes('Malware')) modalBody.innerText = "Keep your antivirus updated. Avoid downloading 'Mod APKs' or cracked software.";
+            else if(title.includes('CSAM')) modalBody.innerText = "Reporting is anonymous. Your action saves a child. Contact Cyber Crime Portal (cybercrime.gov.in) or call 1930.";
+            else modalBody.innerText = "Stay vigilant. When in doubt, don't click.";
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function checkAnswer(isCorrect) {
+            const resultText = document.getElementById('quiz-result');
+            if(isCorrect) {
+                resultText.innerText = "✅ Correct! Never trust unsolicited prize messages.";
+                resultText.style.color = "var(--green)";
+                triggerConfetti();
+            } else {
+                resultText.innerText = "❌ Wrong! That is a classic trap. Try again.";
+                resultText.style.color = "var(--danger)";
+            }
+        }
+
+        function handleReport(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('.submit-btn');
+            const originalText = btn.innerText;
+            
+            btn.innerText = "Submitting...";
+            btn.style.backgroundColor = "#ccc";
+            
+            setTimeout(() => {
+                btn.innerText = "Report Submitted Successfully! 🇮🇳";
+                btn.style.backgroundColor = "var(--green)";
+                e.target.reset();
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "var(--chakra-blue)";
+                }, 3000);
+            }, 1500);
+        }
+
+
+        function triggerConfetti() {
+            const colors = ['#FF9933', '#138808', '#000080'];
+            for(let i=0; i<30; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'fixed';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = '-10px';
+                conf.style.width = '10px';
+                conf.style.height = '10px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+                conf.style.transition = 'top 2s ease-in, opacity 2s';
+                conf.style.zIndex = '9999';
+                document.body.appendChild(conf);
+
+                setTimeout(() => {
+                    conf.style.top = '100vh';
+                    conf.style.opacity = '0';
+                }, 100);
+
+                setTimeout(() => { conf.remove(); }, 2000);
+            }
+        }
+
+        window.onload = function() {
+            const hour = new Date().getHours();
+            const heroText = document.querySelector('.hero h1');
+            if(hour < 12) heroText.innerText = "Good Morning! Stay Safe from Spam.";
+            else if(hour < 18) heroText.innerText = "Good Afternoon! Secure Your Digital Life.";
+            else heroText.innerText = "Good Evening! Protect Your Family Online.";
+        }
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
